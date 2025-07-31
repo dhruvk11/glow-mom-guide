@@ -46,11 +46,14 @@ All colors MUST be HSL. Soft, calming, medical-grade palette.
     --input: 343 22% 88%;
     --ring: 174 60% 51%;
 
-    /* Sleep tracker theme - Navy to dawn */
-    --sleep-primary: 215 84% 15%;
-    --sleep-secondary: 215 50% 25%;
-    --sleep-accent: 39 84% 74%;
-    --sleep-muted: 215 30% 92%;
+    /* Sleep tracker theme - Night to dawn with deep purple */
+    --sleep-primary: 252 65% 61%;
+    --sleep-secondary: 252 50% 25%;
+    --sleep-accent: 45 100% 71%;
+    --sleep-moon: 199 100% 63%;
+    --sleep-dark: 243 47% 11%;
+    --sleep-light: 252 89% 95%;
+    --sleep-muted: 252 30% 92%;
     
     /* Mood tracker theme - Soft pastels */
     --mood-happy: 52 98% 77%;
@@ -67,7 +70,8 @@ All colors MUST be HSL. Soft, calming, medical-grade palette.
     --task-card: 39 22% 98%;
     
     /* Wellness gradients */
-    --gradient-sleep: linear-gradient(135deg, hsl(215 84% 15%), hsl(39 84% 74%));
+    --gradient-sleep: linear-gradient(135deg, hsl(243 47% 11%), hsl(252 89% 95%));
+    --gradient-sleep-dark: linear-gradient(180deg, hsl(243 47% 11%), hsl(252 50% 25%));
     --gradient-mood: linear-gradient(135deg, hsl(343 50% 97%), hsl(174 38% 85%));
     --gradient-task: linear-gradient(135deg, hsl(39 44% 96%), hsl(174 30% 92%));
     --gradient-wellness: linear-gradient(135deg, hsl(174 60% 51%), hsl(343 42% 65%));

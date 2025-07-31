@@ -79,6 +79,9 @@ export default {
 					primary: 'hsl(var(--sleep-primary))',
 					secondary: 'hsl(var(--sleep-secondary))',
 					accent: 'hsl(var(--sleep-accent))',
+					moon: 'hsl(var(--sleep-moon))',
+					dark: 'hsl(var(--sleep-dark))',
+					light: 'hsl(var(--sleep-light))',
 					muted: 'hsl(var(--sleep-muted))'
 				},
 				// Mood tracker theme
