@@ -9,20 +9,30 @@ import { useToast } from "@/hooks/use-toast";
 interface Task {
   id: string;
   name: string;
-  icon: any;
+  iconName: string; // Store icon name as string
   completed: boolean;
   category: "supplement" | "appointment" | "exercise" | "hydration";
 }
 
 const defaultTasks: Omit<Task, "completed">[] = [
-  { id: "folic-acid", name: "Folic Acid", icon: Pill, category: "supplement" },
-  { id: "iron", name: "Iron Supplement", icon: Pill, category: "supplement" },
-  { id: "calcium", name: "Calcium/Vitamin D", icon: Pill, category: "supplement" },
-  { id: "ob-visit", name: "OB-GYN Visit", icon: Calendar, category: "appointment" },
-  { id: "walk", name: "Daily Walk (30 mins)", icon: Dumbbell, category: "exercise" },
-  { id: "kegels", name: "Kegel Exercises", icon: Dumbbell, category: "exercise" },
-  { id: "hydration", name: "Hydration (8 glasses)", icon: Droplets, category: "hydration" },
+  { id: "folic-acid", name: "Folic Acid", iconName: "Pill", category: "supplement" },
+  { id: "iron", name: "Iron Supplement", iconName: "Pill", category: "supplement" },
+  { id: "calcium", name: "Calcium/Vitamin D", iconName: "Pill", category: "supplement" },
+  { id: "ob-visit", name: "OB-GYN Visit", iconName: "Calendar", category: "appointment" },
+  { id: "walk", name: "Daily Walk (30 mins)", iconName: "Dumbbell", category: "exercise" },
+  { id: "kegels", name: "Kegel Exercises", iconName: "Dumbbell", category: "exercise" },
+  { id: "hydration", name: "Hydration (8 glasses)", iconName: "Droplets", category: "hydration" },
 ];
+
+// Icon mapping
+const iconMap = {
+  Pill,
+  Calendar,
+  Dumbbell,
+  Droplets,
+  CheckCircle2,
+  AlertTriangle,
+} as const;
 
 const taskAdvice = {
   "folic-acid": {
@@ -147,7 +157,10 @@ export function TaskTracker() {
             />
             
             <div className={`p-2 rounded-lg bg-${getCategoryColor(task.category)}/10`}>
-              <task.icon className={`w-4 h-4 text-${getCategoryColor(task.category)}`} />
+              {(() => {
+                const IconComponent = iconMap[task.iconName as keyof typeof iconMap];
+                return IconComponent ? <IconComponent className={`w-4 h-4 text-${getCategoryColor(task.category)}`} /> : null;
+              })()}
             </div>
             
             <div className="flex-1">
