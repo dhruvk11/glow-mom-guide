@@ -1,0 +1,64 @@
+{
+  "name": "Pregnancy Wellness Tracker",
+  "short_name": "Pregnancy Wellness",
+  "description": "Track your mood, sleep, and wellness during pregnancy with evidence-based insights",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#F8F4F0",
+  "theme_color": "#4FBEAA",
+  "orientation": "portrait-primary",
+  "scope": "/",
+  "icons": [
+    {
+      "src": "placeholder.svg",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "placeholder.svg", 
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["health", "medical", "lifestyle"],
+  "shortcuts": [
+    {
+      "name": "Track Mood",
+      "short_name": "Mood",
+      "description": "Log your current mood with medical insights",
+      "url": "/trackers?tab=mood",
+      "icons": [
+        {
+          "src": "placeholder.svg",
+          "sizes": "96x96"
+        }
+      ]
+    },
+    {
+      "name": "Log Sleep",
+      "short_name": "Sleep", 
+      "description": "Track your sleep patterns and quality",
+      "url": "/trackers?tab=sleep",
+      "icons": [
+        {
+          "src": "placeholder.svg",
+          "sizes": "96x96"
+        }
+      ]
+    },
+    {
+      "name": "Daily Tasks",
+      "short_name": "Tasks",
+      "description": "Complete your wellness activities",
+      "url": "/trackers?tab=tasks", 
+      "icons": [
+        {
+          "src": "placeholder.svg",
+          "sizes": "96x96"
+        }
+      ]
+    }
+  ]
+}

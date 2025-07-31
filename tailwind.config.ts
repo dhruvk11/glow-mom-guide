@@ -18,6 +18,9 @@ export default {
 			}
 		},
 		extend: {
+			fontFamily: {
+				sans: ['Inter', 'system-ui', 'sans-serif'],
+			},
 			colors: {
 				border: 'hsl(var(--border))',
 				input: 'hsl(var(--input))',
@@ -61,7 +64,54 @@ export default {
 					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
+				},
+				// Wellness tracker colors
+				warning: {
+					DEFAULT: 'hsl(var(--warning))',
+					foreground: 'hsl(var(--warning-foreground))'
+				},
+				success: {
+					DEFAULT: 'hsl(var(--success))',
+					foreground: 'hsl(var(--success-foreground))'
+				},
+				// Sleep tracker theme
+				sleep: {
+					primary: 'hsl(var(--sleep-primary))',
+					secondary: 'hsl(var(--sleep-secondary))',
+					accent: 'hsl(var(--sleep-accent))',
+					muted: 'hsl(var(--sleep-muted))'
+				},
+				// Mood tracker theme
+				mood: {
+					happy: 'hsl(var(--mood-happy))',
+					content: 'hsl(var(--mood-content))',
+					neutral: 'hsl(var(--mood-neutral))',
+					sad: 'hsl(var(--mood-sad))',
+					angry: 'hsl(var(--mood-angry))',
+					card: 'hsl(var(--mood-card))'
+				},
+				// Task tracker theme
+				task: {
+					primary: 'hsl(var(--task-primary))',
+					secondary: 'hsl(var(--task-secondary))',
+					background: 'hsl(var(--task-background))',
+					card: 'hsl(var(--task-card))'
 				}
+			},
+			backgroundImage: {
+				'gradient-sleep': 'var(--gradient-sleep)',
+				'gradient-mood': 'var(--gradient-mood)',
+				'gradient-task': 'var(--gradient-task)',
+				'gradient-wellness': 'var(--gradient-wellness)'
+			},
+			boxShadow: {
+				'soft': 'var(--shadow-soft)',
+				'medium': 'var(--shadow-medium)',
+				'wellness': 'var(--shadow-wellness)'
+			},
+			transitionTimingFunction: {
+				'smooth': 'var(--transition-smooth)',
+				'gentle': 'var(--transition-gentle)'
 			},
 			borderRadius: {
 				lg: 'var(--radius)',

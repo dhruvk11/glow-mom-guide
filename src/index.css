@@ -2,41 +2,86 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
-All colors MUST be HSL.
+/* Pregnancy Wellness Tracker Design System
+All colors MUST be HSL. Soft, calming, medical-grade palette.
 */
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    /* Base wellness palette */
+    --background: 343 22% 98%;
+    --foreground: 215 25% 27%;
 
     --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card-foreground: 215 25% 27%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover-foreground: 215 25% 27%;
 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
+    /* Primary - Soft teal for wellness */
+    --primary: 174 60% 51%;
+    --primary-foreground: 0 0% 100%;
+    
+    /* Secondary - Warm blush for comfort */
+    --secondary: 343 42% 91%;
+    --secondary-foreground: 215 25% 27%;
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    --muted: 343 22% 95%;
+    --muted-foreground: 215 16% 47%;
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    --accent: 174 38% 85%;
+    --accent-foreground: 215 25% 27%;
 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    /* Medical warning colors */
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    
+    --warning: 38 92% 50%;
+    --warning-foreground: 0 0% 100%;
+    
+    --success: 142 71% 45%;
+    --success-foreground: 0 0% 100%;
 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    --border: 343 22% 88%;
+    --input: 343 22% 88%;
+    --ring: 174 60% 51%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    /* Sleep tracker theme - Navy to dawn */
+    --sleep-primary: 215 84% 15%;
+    --sleep-secondary: 215 50% 25%;
+    --sleep-accent: 39 84% 74%;
+    --sleep-muted: 215 30% 92%;
+    
+    /* Mood tracker theme - Soft pastels */
+    --mood-happy: 52 98% 77%;
+    --mood-content: 174 60% 51%;
+    --mood-neutral: 215 16% 65%;
+    --mood-sad: 215 84% 15%;
+    --mood-angry: 0 84% 60%;
+    --mood-card: 343 50% 97%;
+    
+    /* Task tracker theme - Ivory with green accents */
+    --task-primary: 142 71% 45%;
+    --task-secondary: 174 60% 51%;
+    --task-background: 39 44% 96%;
+    --task-card: 39 22% 98%;
+    
+    /* Wellness gradients */
+    --gradient-sleep: linear-gradient(135deg, hsl(215 84% 15%), hsl(39 84% 74%));
+    --gradient-mood: linear-gradient(135deg, hsl(343 50% 97%), hsl(174 38% 85%));
+    --gradient-task: linear-gradient(135deg, hsl(39 44% 96%), hsl(174 30% 92%));
+    --gradient-wellness: linear-gradient(135deg, hsl(174 60% 51%), hsl(343 42% 65%));
+    
+    /* Elegant shadows */
+    --shadow-soft: 0 2px 8px hsl(215 25% 27% / 0.08);
+    --shadow-medium: 0 4px 16px hsl(215 25% 27% / 0.12);
+    --shadow-wellness: 0 8px 32px hsl(174 60% 51% / 0.15);
+    
+    /* Smooth transitions */
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-gentle: all 0.2s ease-out;
 
-    --radius: 0.5rem;
+    --radius: 0.75rem;
 
     --sidebar-background: 0 0% 98%;
 
@@ -101,5 +146,21 @@ All colors MUST be HSL.
 
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+@layer utilities {
+  .line-clamp-2 {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+  
+  .line-clamp-3 {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
   }
 }
