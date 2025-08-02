@@ -1,379 +1,259 @@
 import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
-import { Slider } from "@/components/ui/slider";
-import { Badge } from "@/components/ui/badge";
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import { Moon, Sun, Bed, ChevronDown, BarChart3, Calendar } from "lucide-react";
+import { ArrowLeft, TrendingUp, Moon, Sun } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { CircularTimeSlider } from "./CircularTimeSlider";
 
-const sleepPositions = [
-  { 
-    value: "left", 
-    label: "Left Side", 
-    icon: "🛌", 
-    recommended: true,
-    description: "Optimal for circulation"
-  },
-  { 
-    value: "right", 
-    label: "Right Side", 
-    icon: "🛏️", 
-    recommended: false,
-    description: "Good alternative" 
-  },
-  { 
-    value: "back", 
-    label: "Back", 
-    icon: "🛌", 
-    recommended: false,
-    description: "Avoid in late pregnancy"
-  },
-  { 
-    value: "stomach", 
-    label: "Stomach", 
-    icon: "🛏️", 
-    recommended: false,
-    description: "Not recommended"
-  },
+const sleepQualityOptions = [
+  { value: 'poor', emoji: '😩', label: 'Poor' },
+  { value: 'fair', emoji: '🥱', label: 'Fair' },
+  { value: 'good', emoji: '😴', label: 'Good' },
+  { value: 'great', emoji: '😊', label: 'Great' },
+  { value: 'excellent', emoji: '🌟', label: 'Excellent' }
 ];
 
-const getSleepHoursAdvice = (hours: number) => {
-  if (hours < 5) {
-    return {
-      message: "Sleeping less than 5 hours increases risk of gestational diabetes and preeclampsia.",
-      type: "warning" as const
-    };
-  }
-  if (hours < 7) {
-    return {
-      message: "Slightly below optimal. Try unwinding with a warm bath or prenatal yoga.",
-      type: "info" as const
-    };
-  }
-  if (hours >= 8) {
-    return {
-      message: "Great! Adequate sleep supports immune function and baby's brain development.",
-      type: "success" as const
-    };
-  }
-  return {
-    message: "Good sleep duration. Consistency helps regulate your circadian rhythm.",
-    type: "success" as const
-  };
-};
-
-const getSleepQualityAdvice = (quality: number) => {
-  if (quality < 40) {
-    return {
-      message: "Low quality sleep is linked to higher stress hormone levels. Consider using a white noise app.",
-      type: "warning" as const
-    };
-  }
-  if (quality < 70) {
-    return {
-      message: "Average sleep. Reduce caffeine and avoid screens before bedtime.",
-      type: "info" as const
-    };
-  }
-  return {
-    message: "Excellent sleep! You're helping your body recover and your baby thrive.",
-    type: "success" as const
-  };
-};
-
-const getPositionAdvice = (position: string) => {
-  if (position === "back" || position === "stomach") {
-    return {
-      message: "Sleeping on your back or stomach may reduce blood flow. Left side is highly recommended.",
-      type: "warning" as const
-    };
-  }
-  if (position === "left") {
-    return {
-      message: "Great choice! This position improves circulation and oxygen delivery to your baby.",
-      type: "success" as const
-    };
-  }
-  return {
-    message: "Side sleeping is good. Left side position is preferred for optimal blood flow.",
-    type: "info" as const
-  };
-};
-
-const getQualityEmoji = (quality: number) => {
-  if (quality < 20) return "😫";
-  if (quality < 40) return "😴";
-  if (quality < 60) return "😐";
-  if (quality < 80) return "😊";
-  return "😌";
-};
-
-// Mock weekly data
-const weeklyData = [
-  { day: "Sun", hours: 7.5, quality: 75 },
-  { day: "Mon", hours: 6.8, quality: 65 },
-  { day: "Tue", hours: 8.2, quality: 85 },
-  { day: "Wed", hours: 7.1, quality: 70 },
-  { day: "Thu", hours: 6.5, quality: 60 },
-  { day: "Fri", hours: 7.8, quality: 80 },
-  { day: "Sat", hours: 8.5, quality: 90 },
+const sleepDisruptors = [
+  'Bathroom trips',
+  'Nightmares', 
+  'Anxiety',
+  'Body discomfort',
+  'Loud noises',
+  'Other'
 ];
+
+const getSleepAdvice = (hours: number) => {
+  if (hours < 6) {
+    return "Less than 6 hours of sleep can increase stress and impact recovery.";
+  }
+  if (hours >= 6 && hours <= 8) {
+    return "Good! You're getting enough rest.";
+  }
+  if (hours > 9) {
+    return "Oversleeping can sometimes be linked to fatigue. Balance is key.";
+  }
+  return "Good! You're getting enough rest.";
+};
+
+const getQualityAdvice = (quality: string) => {
+  const advice = {
+    poor: "Consider improving your wind-down routine. Try less screen time before bed.",
+    fair: "Try consistent bedtime to help improve quality.",
+    good: "Good! Keep maintaining your sleep hygiene.",
+    great: "Excellent! Keep up the healthy sleep habits.",
+    excellent: "Fantastic! Quality sleep is a great foundation for health."
+  };
+  return advice[quality as keyof typeof advice] || "";
+};
 
 export function SleepTracker() {
   const [bedtime, setBedtime] = useState(22.5); // 10:30 PM
-  const [waketime, setWaketime] = useState(7.25); // 7:15 AM
-  const [quality, setQuality] = useState([75]);
-  const [position, setPosition] = useState("");
-  const [summaryOpen, setSummaryOpen] = useState(false);
-  const [summaryView, setSummaryView] = useState<"weekly" | "monthly">("weekly");
+  const [waketime, setWaketime] = useState(7.5); // 7:30 AM
+  const [quality, setQuality] = useState('');
+  const [disruptors, setDisruptors] = useState<string[]>([]);
+  const [otherDisruptor, setOtherDisruptor] = useState('');
   const { toast } = useToast();
+
+  const formatTime = (hours: number) => {
+    const h = Math.floor(hours);
+    const m = Math.round((hours - h) * 60);
+    const displayHour = h === 0 ? 12 : h > 12 ? h - 12 : h;
+    const ampm = h >= 12 ? 'PM' : 'AM';
+    return `${displayHour}:${m.toString().padStart(2, '0')} ${ampm}`;
+  };
 
   const calculateSleepDuration = () => {
     let duration = waketime - bedtime;
     if (duration < 0) duration += 24;
-    return duration;
+    const hours = Math.floor(duration);
+    const minutes = Math.round((duration - hours) * 60);
+    return { hours, minutes, total: duration };
   };
 
-  const sleepHours = calculateSleepDuration();
-  const hoursAdvice = getSleepHoursAdvice(sleepHours);
-  const qualityAdvice = getSleepQualityAdvice(quality[0]);
-  const positionAdvice = position ? getPositionAdvice(position) : null;
+  const sleepDuration = calculateSleepDuration();
 
-  const handleSubmit = () => {
-    if (!position) return;
-    
+  const handleTimeChange = (type: 'bedtime' | 'waketime', value: number) => {
+    if (type === 'bedtime') {
+      setBedtime(value);
+    } else {
+      setWaketime(value);
+    }
+  };
+
+  const toggleDisruptor = (disruptor: string) => {
+    setDisruptors(prev => 
+      prev.includes(disruptor) 
+        ? prev.filter(d => d !== disruptor)
+        : [...prev, disruptor]
+    );
+  };
+
+  const handleSave = () => {
+    if (!quality) {
+      toast({
+        title: "Please select sleep quality",
+        description: "We need to know how well you slept to provide better insights.",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    const advice = getQualityAdvice(quality);
     toast({
       title: "Sleep logged! 🌙",
-      description: `${sleepHours.toFixed(1)}h sleep with ${quality[0]}% quality. ${hoursAdvice.message}`,
+      description: `${sleepDuration.hours}h ${sleepDuration.minutes}m sleep. ${advice}`,
       duration: 6000,
     });
 
     // Reset form
     setBedtime(22.5);
-    setWaketime(7.25);
-    setQuality([75]);
-    setPosition("");
+    setWaketime(7.5);
+    setQuality('');
+    setDisruptors([]);
+    setOtherDisruptor('');
   };
 
-  const avgSleepHours = weeklyData.reduce((sum, day) => sum + day.hours, 0) / weeklyData.length;
-  const avgQuality = weeklyData.reduce((sum, day) => sum + day.quality, 0) / weeklyData.length;
-
   return (
-    <div className="space-y-6">
-      {/* Main Sleep Tracker Card */}
-      <Card className="relative overflow-hidden bg-gradient-sleep">
-        <div className="absolute inset-0 bg-gradient-to-b from-sleep-dark/20 to-transparent" />
-        <div className="relative p-6 text-white">
-          <div className="flex items-center gap-3 mb-6">
-            <div className="p-2 rounded-xl bg-white/20">
-              <Moon className="w-6 h-6 text-sleep-moon" />
-            </div>
+    <div className="min-h-screen bg-gradient-to-b from-[#4C5CDB] to-[#6C5DD3] text-white">
+      {/* Header */}
+      <div className="flex items-center justify-between p-6 pt-12">
+        <ArrowLeft className="w-6 h-6" />
+        <TrendingUp className="w-6 h-6 p-1 bg-white/20 rounded-full" />
+      </div>
+
+      <div className="px-6 pb-6">
+        <h1 className="text-3xl font-bold mb-2">Sleep Tracker</h1>
+        <p className="text-white/80 text-lg">Track your rest for better wellness</p>
+      </div>
+
+      <div className="px-6 space-y-6">
+        {/* Sleep Tip Banner */}
+        <Card className="bg-white/10 backdrop-blur-sm border-white/20 p-6 rounded-2xl">
+          <div className="flex items-start gap-4">
+            <div className="text-2xl">🌙</div>
             <div>
-              <h3 className="text-xl font-semibold">Sleep Schedule</h3>
-              <p className="text-sm text-white/80">
-                Set your bedtime and wake time
+              <h3 className="font-semibold text-white mb-2 flex items-center gap-2">
+                Sleep Tip
+              </h3>
+              <p className="text-white/90 text-sm leading-relaxed">
+                Try sleeping on your left side to improve blood flow to your baby. Use pillows for support!
               </p>
             </div>
           </div>
+        </Card>
 
-          {/* Circular Time Slider */}
-          <div className="mb-6">
-            <CircularTimeSlider
-              bedtime={bedtime}
-              waketime={waketime}
-              onBedtimeChange={setBedtime}
-              onWaketimeChange={setWaketime}
-            />
-          </div>
-
-          {/* Sleep Duration Feedback */}
-          <div className={`p-4 rounded-xl mb-4 ${
-            hoursAdvice.type === 'success' ? 'bg-green-500/20 border border-green-400/30' :
-            hoursAdvice.type === 'warning' ? 'bg-red-500/20 border border-red-400/30' :
-            'bg-blue-500/20 border border-blue-400/30'
-          }`}>
-            <p className="text-sm font-medium">
-              🛌 You slept {sleepHours.toFixed(1)} hours — {hoursAdvice.message}
-            </p>
-          </div>
-        </div>
-      </Card>
-
-      {/* Sleep Quality Card */}
-      <Card className="p-6 bg-white">
-        <div className="space-y-4">
-          <div className="flex items-center justify-between">
-            <Label className="text-sleep-primary font-semibold">Sleep Quality</Label>
-            <div className="flex items-center gap-2">
-              <span className="text-2xl">{getQualityEmoji(quality[0])}</span>
-              <span className="text-xl font-semibold text-sleep-primary">{quality[0]}%</span>
-            </div>
-          </div>
+        {/* Sleep Times */}
+        <Card className="bg-white/10 backdrop-blur-sm border-white/20 p-6 rounded-2xl">
+          <h2 className="text-xl font-semibold text-white mb-6">Sleep Times</h2>
           
-          <div className="px-2">
-            <Slider
-              value={quality}
-              onValueChange={setQuality}
-              max={100}
-              min={0}
-              step={5}
-              className="w-full"
-            />
-            <div className="flex justify-between text-xs text-muted-foreground mt-2">
-              <span>😫 Tired</span>
-              <span>😐 Average</span>
-              <span>😌 Refreshed</span>
+          <div className="grid grid-cols-2 gap-4 mb-6">
+            <div className="space-y-3">
+              <div className="flex items-center gap-2 text-white/80">
+                <Moon className="w-5 h-5" />
+                <span className="font-medium">Bedtime</span>
+              </div>
+              <input
+                type="time"
+                value={`${Math.floor(bedtime).toString().padStart(2, '0')}:${Math.round((bedtime - Math.floor(bedtime)) * 60).toString().padStart(2, '0')}`}
+                onChange={(e) => {
+                  const [hours, minutes] = e.target.value.split(':').map(Number);
+                  handleTimeChange('bedtime', hours + minutes / 60);
+                }}
+                className="w-full bg-white/20 border border-white/30 rounded-xl px-4 py-3 text-white text-lg font-medium placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-white/50"
+              />
+            </div>
+            
+            <div className="space-y-3">
+              <div className="flex items-center gap-2 text-white/80">
+                <Sun className="w-5 h-5" />
+                <span className="font-medium">Wake Time</span>
+              </div>
+              <input
+                type="time"
+                value={`${Math.floor(waketime).toString().padStart(2, '0')}:${Math.round((waketime - Math.floor(waketime)) * 60).toString().padStart(2, '0')}`}
+                onChange={(e) => {
+                  const [hours, minutes] = e.target.value.split(':').map(Number);
+                  handleTimeChange('waketime', hours + minutes / 60);
+                }}
+                className="w-full bg-white/20 border border-white/30 rounded-xl px-4 py-3 text-white text-lg font-medium placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-white/50"
+              />
             </div>
           </div>
 
-          {/* Quality Feedback */}
-          <div className={`p-3 rounded-lg ${
-            qualityAdvice.type === 'success' ? 'bg-green-50 border border-green-200' :
-            qualityAdvice.type === 'warning' ? 'bg-red-50 border border-red-200' :
-            'bg-blue-50 border border-blue-200'
-          }`}>
-            <p className="text-sm text-card-foreground">{qualityAdvice.message}</p>
+          {/* Sleep Duration Display */}
+          <div className="text-center py-4">
+            <div className="text-2xl font-bold text-white mb-1">
+              You slept for {sleepDuration.hours}h {sleepDuration.minutes}m
+            </div>
+            <div className="text-white/70 text-sm">
+              {getSleepAdvice(sleepDuration.total)}
+            </div>
           </div>
-        </div>
-      </Card>
+        </Card>
 
-      {/* Sleep Position Card */}
-      <Card className="p-6 bg-white">
-        <div className="space-y-4">
-          <Label className="text-sleep-primary font-semibold">Sleep Position</Label>
-          <div className="grid grid-cols-2 gap-3">
-            {sleepPositions.map((pos) => (
+        {/* Sleep Quality */}
+        <Card className="bg-white/10 backdrop-blur-sm border-white/20 p-6 rounded-2xl">
+          <h2 className="text-xl font-semibold text-white mb-6">How was your sleep quality?</h2>
+          
+          <div className="grid grid-cols-5 gap-3">
+            {sleepQualityOptions.map((option) => (
               <button
-                key={pos.value}
-                onClick={() => setPosition(pos.value)}
+                key={option.value}
+                onClick={() => setQuality(option.value)}
                 className={`
-                  p-4 rounded-xl text-left transition-all duration-200 border-2
-                  ${position === pos.value 
-                    ? 'border-sleep-primary bg-sleep-light shadow-md' 
-                    : 'border-border bg-card hover:border-sleep-primary/50'
+                  p-4 rounded-2xl text-center transition-all duration-200
+                  ${quality === option.value 
+                    ? 'bg-white/30 border-2 border-white scale-105' 
+                    : 'bg-white/10 border border-white/20 hover:bg-white/20'
                   }
                 `}
               >
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-2xl">{pos.icon}</span>
-                  {pos.recommended && (
-                    <Badge className="bg-green-100 text-green-700 border-green-200 text-xs">
-                      Best
-                    </Badge>
-                  )}
-                </div>
-                <div className="font-medium text-card-foreground">{pos.label}</div>
-                <div className="text-xs text-muted-foreground">{pos.description}</div>
+                <div className="text-3xl mb-2">{option.emoji}</div>
+                <div className="text-white text-sm font-medium">{option.label}</div>
+              </button>
+            ))}
+          </div>
+        </Card>
+
+        {/* Sleep Disruptors */}
+        <Card className="bg-white/10 backdrop-blur-sm border-white/20 p-6 rounded-2xl">
+          <h2 className="text-xl font-semibold text-white mb-6">What disrupted your sleep?</h2>
+          
+          <div className="grid grid-cols-2 gap-3 mb-4">
+            {sleepDisruptors.map((disruptor) => (
+              <button
+                key={disruptor}
+                onClick={() => toggleDisruptor(disruptor)}
+                className={`
+                  p-4 rounded-xl text-left transition-all duration-200 border
+                  ${disruptors.includes(disruptor)
+                    ? 'bg-white/30 border-white text-white' 
+                    : 'bg-white/10 border-white/20 text-white/80 hover:bg-white/20'
+                  }
+                `}
+              >
+                <span className="font-medium">{disruptor}</span>
               </button>
             ))}
           </div>
 
-          {/* Position Feedback */}
-          {positionAdvice && (
-            <div className={`p-3 rounded-lg ${
-              positionAdvice.type === 'success' ? 'bg-green-50 border border-green-200' :
-              positionAdvice.type === 'warning' ? 'bg-red-50 border border-red-200' :
-              'bg-blue-50 border border-blue-200'
-            }`}>
-              <p className="text-sm text-card-foreground">🛏️ {positionAdvice.message}</p>
-            </div>
+          {disruptors.includes('Other') && (
+            <input
+              type="text"
+              placeholder="Describe what disrupted your sleep..."
+              value={otherDisruptor}
+              onChange={(e) => setOtherDisruptor(e.target.value)}
+              className="w-full bg-white/20 border border-white/30 rounded-xl px-4 py-3 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-white/50"
+            />
           )}
-        </div>
-      </Card>
+        </Card>
 
-      {/* Sleep Summary */}
-      <Card className="p-6 bg-white">
-        <Collapsible open={summaryOpen} onOpenChange={setSummaryOpen}>
-          <CollapsibleTrigger asChild>
-            <Button variant="ghost" className="w-full justify-between p-0 h-auto">
-              <div className="flex items-center gap-2">
-                <Calendar className="w-5 h-5 text-sleep-primary" />
-                <span className="font-semibold text-sleep-primary">🗓️ Sleep Summary</span>
-              </div>
-              <ChevronDown className={`w-4 h-4 transition-transform ${summaryOpen ? 'rotate-180' : ''}`} />
-            </Button>
-          </CollapsibleTrigger>
-          
-          <CollapsibleContent className="space-y-4 mt-4">
-            <div className="flex justify-between items-center">
-              <div className="flex gap-2">
-                <Button
-                  size="sm"
-                  variant={summaryView === "weekly" ? "default" : "outline"}
-                  onClick={() => setSummaryView("weekly")}
-                  className="text-xs"
-                >
-                  Weekly
-                </Button>
-                <Button
-                  size="sm"
-                  variant={summaryView === "monthly" ? "default" : "outline"}
-                  onClick={() => setSummaryView("monthly")}
-                  className="text-xs"
-                >
-                  Monthly
-                </Button>
-              </div>
-              <div className="text-right text-sm">
-                <div className="font-medium text-sleep-primary">
-                  Avg: {avgSleepHours.toFixed(1)} hrs
-                </div>
-                <div className="text-muted-foreground">
-                  Quality: {avgQuality.toFixed(0)}%
-                </div>
-              </div>
-            </div>
-
-            {/* Simple bar chart */}
-            <div className="space-y-2">
-              {weeklyData.map((day) => (
-                <div key={day.day} className="flex items-center gap-3">
-                  <span className="text-xs w-8 text-muted-foreground">{day.day}</span>
-                  <div className="flex-1 bg-sleep-muted rounded-full h-3 relative">
-                    <div 
-                      className="bg-sleep-primary rounded-full h-3 transition-all duration-300"
-                      style={{ width: `${(day.hours / 10) * 100}%` }}
-                    />
-                  </div>
-                  <span className="text-xs w-12 text-right text-sleep-primary font-medium">
-                    {day.hours}h
-                  </span>
-                </div>
-              ))}
-            </div>
-
-            <div className="bg-sleep-light/50 rounded-lg p-3">
-              <p className="text-sm text-sleep-primary font-medium">
-                💡 Your average sleep improved by 45 min this week — great trend!
-              </p>
-            </div>
-          </CollapsibleContent>
-        </Collapsible>
-      </Card>
-
-      {/* Submit Button */}
-      {position && (
+        {/* Save Button */}
         <Button 
-          onClick={handleSubmit}
-          className="w-full bg-sleep-primary hover:bg-sleep-primary/90 text-white py-6"
+          onClick={handleSave}
+          className="w-full bg-white text-[#6C5DD3] hover:bg-white/90 py-6 text-lg font-semibold rounded-2xl mb-8"
         >
-          <Bed className="w-5 h-5 mr-2" />
-          Log Sleep Entry
+          Save Sleep Log
         </Button>
-      )}
-
-      {/* Sleep Tip Footer */}
-      <div className="bg-sleep-light/30 border border-sleep-primary/20 rounded-xl p-4">
-        <h3 className="font-semibold text-sleep-primary mb-2 flex items-center gap-2">
-          <Moon className="w-5 h-5" />
-          Sleep Tip
-        </h3>
-        <p className="text-sm text-sleep-secondary">
-          During pregnancy, your body needs extra rest. Stick to a consistent bedtime and create a calming sleep space.
-        </p>
       </div>
     </div>
   );
