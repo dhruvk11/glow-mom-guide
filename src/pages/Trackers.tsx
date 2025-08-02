@@ -1,23 +1,38 @@
 import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Heart, Moon, CheckSquare } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Heart, Moon, CheckSquare, Plus, ListTodo } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { MoodTracker } from "@/components/MoodTracker";
 import { SleepTracker } from "@/components/SleepTracker";
 import { TaskTracker } from "@/components/TaskTracker";
 
 export default function Trackers() {
   const [activeTab, setActiveTab] = useState("mood");
+  const navigate = useNavigate();
 
   return (
     <div className="min-h-screen bg-background pb-20 md:pb-8">
       <div className="max-w-4xl mx-auto px-4 md:px-6 py-6">
-        <div className="mb-6">
-          <h1 className="text-2xl md:text-3xl font-bold text-card-foreground mb-2">
-            Wellness Trackers
-          </h1>
-          <p className="text-muted-foreground">
-            Monitor your mood, sleep, and daily wellness activities with medical insights
-          </p>
+        <div className="flex items-center justify-between mb-6">
+          <div>
+            <h1 className="text-2xl md:text-3xl font-bold text-card-foreground mb-2">
+              Wellness Trackers
+            </h1>
+            <p className="text-muted-foreground">
+              Monitor your mood, sleep, and daily wellness activities with medical insights
+            </p>
+          </div>
+          <div className="flex gap-2">
+            <Button onClick={() => navigate("/add-task")} className="hidden sm:flex">
+              <Plus className="w-4 h-4 mr-2" />
+              Add Task
+            </Button>
+            <Button onClick={() => navigate("/my-tasks")} variant="outline">
+              <ListTodo className="w-4 h-4 mr-2" />
+              My Tasks
+            </Button>
+          </div>
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
