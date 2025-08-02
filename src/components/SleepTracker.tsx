@@ -1,8 +1,18 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, TrendingUp, Moon, Sun } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { CircularTimeSlider } from "./CircularTimeSlider";
+
+const sleepTips = [
+  "Try sleeping on your left side to improve blood flow to your baby. Use pillows for support!",
+  "Avoid screens 1 hour before bed to improve melatonin production.",
+  "Drink water but stop at least 2 hours before sleep to avoid waking up often.",
+  "Maintain a consistent sleep schedule even on weekends.",
+  "Keep your bedroom cool and dark for better sleep quality.",
+  "Light prenatal yoga or stretching can help prepare your body for rest."
+];
 
 const sleepQualityOptions = [
   { value: 'poor', emoji: '😩', label: 'Poor' },
@@ -51,7 +61,16 @@ export function SleepTracker() {
   const [quality, setQuality] = useState('');
   const [disruptors, setDisruptors] = useState<string[]>([]);
   const [otherDisruptor, setOtherDisruptor] = useState('');
+  const [currentTipIndex, setCurrentTipIndex] = useState(0);
   const { toast } = useToast();
+
+  // Rotate tips every 10 seconds
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentTipIndex((prev) => (prev + 1) % sleepTips.length);
+    }, 10000);
+    return () => clearInterval(interval);
+  }, []);
 
   const formatTime = (hours: number) => {
     const h = Math.floor(hours);
@@ -125,69 +144,32 @@ export function SleepTracker() {
         <p className="text-white/80 text-lg">Track your rest for better wellness</p>
       </div>
 
-      <div className="px-6 space-y-6">
+      <div className="px-4 space-y-6 max-w-md mx-auto">
         {/* Sleep Tip Banner */}
-        <Card className="bg-white/10 backdrop-blur-sm border-white/20 p-6 rounded-2xl">
+        <Card className="bg-white/10 backdrop-blur-sm border-white/20 p-6 rounded-2xl transition-all duration-500">
           <div className="flex items-start gap-4">
-            <div className="text-2xl">🌙</div>
+            <div className="text-2xl">💡</div>
             <div>
-              <h3 className="font-semibold text-white mb-2 flex items-center gap-2">
+              <h3 className="font-semibold text-white mb-2">
                 Sleep Tip
               </h3>
               <p className="text-white/90 text-sm leading-relaxed">
-                Try sleeping on your left side to improve blood flow to your baby. Use pillows for support!
+                {sleepTips[currentTipIndex]}
               </p>
             </div>
           </div>
         </Card>
 
-        {/* Sleep Times */}
+        {/* Sleep Times - Apple Watch Style Dial */}
         <Card className="bg-white/10 backdrop-blur-sm border-white/20 p-6 rounded-2xl">
-          <h2 className="text-xl font-semibold text-white mb-6">Sleep Times</h2>
+          <h2 className="text-xl font-semibold text-white mb-6 text-center">Sleep Times</h2>
           
-          <div className="grid grid-cols-2 gap-4 mb-6">
-            <div className="space-y-3">
-              <div className="flex items-center gap-2 text-white/80">
-                <Moon className="w-5 h-5" />
-                <span className="font-medium">Bedtime</span>
-              </div>
-              <input
-                type="time"
-                value={`${Math.floor(bedtime).toString().padStart(2, '0')}:${Math.round((bedtime - Math.floor(bedtime)) * 60).toString().padStart(2, '0')}`}
-                onChange={(e) => {
-                  const [hours, minutes] = e.target.value.split(':').map(Number);
-                  handleTimeChange('bedtime', hours + minutes / 60);
-                }}
-                className="w-full bg-white/20 border border-white/30 rounded-xl px-4 py-3 text-white text-lg font-medium placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-white/50"
-              />
-            </div>
-            
-            <div className="space-y-3">
-              <div className="flex items-center gap-2 text-white/80">
-                <Sun className="w-5 h-5" />
-                <span className="font-medium">Wake Time</span>
-              </div>
-              <input
-                type="time"
-                value={`${Math.floor(waketime).toString().padStart(2, '0')}:${Math.round((waketime - Math.floor(waketime)) * 60).toString().padStart(2, '0')}`}
-                onChange={(e) => {
-                  const [hours, minutes] = e.target.value.split(':').map(Number);
-                  handleTimeChange('waketime', hours + minutes / 60);
-                }}
-                className="w-full bg-white/20 border border-white/30 rounded-xl px-4 py-3 text-white text-lg font-medium placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-white/50"
-              />
-            </div>
-          </div>
-
-          {/* Sleep Duration Display */}
-          <div className="text-center py-4">
-            <div className="text-2xl font-bold text-white mb-1">
-              You slept for {sleepDuration.hours}h {sleepDuration.minutes}m
-            </div>
-            <div className="text-white/70 text-sm">
-              {getSleepAdvice(sleepDuration.total)}
-            </div>
-          </div>
+          <CircularTimeSlider
+            bedtime={bedtime}
+            waketime={waketime}
+            onBedtimeChange={setBedtime}
+            onWaketimeChange={setWaketime}
+          />
         </Card>
 
         {/* Sleep Quality */}
