@@ -3,7 +3,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ArrowLeft, Calendar, Pill, FileText, Bell, Plus, Edit, Trash2 } from "lucide-react";
+import { ArrowLeft, Calendar, Pill, FileText, Bell, Plus, Edit, Trash2, CheckSquare } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { format } from "date-fns";
 
@@ -196,6 +196,127 @@ export default function MyTasks() {
       </div>
 
       <div className="max-w-4xl mx-auto px-4 md:px-6 py-6">
+        {/* Daily Wellness Tasks Section */}
+        <div className="mb-8">
+          <div className="flex items-center gap-2 mb-4">
+            <div className="p-2 rounded-lg bg-primary/10">
+              <CheckSquare className="w-5 h-5 text-primary" />
+            </div>
+            <div>
+              <h2 className="text-lg font-semibold text-card-foreground">Daily Wellness Tasks</h2>
+              <p className="text-sm text-muted-foreground">Complete evidence-based activities for pregnancy health</p>
+            </div>
+          </div>
+          
+          <Card className="p-6">
+            <div className="mb-4">
+              <div className="flex items-center justify-between mb-2">
+                <h3 className="font-semibold text-card-foreground">Daily Wellness Tasks</h3>
+                <div className="text-sm text-muted-foreground">
+                  <span className="text-xl font-bold text-green-600">0</span>/7
+                </div>
+              </div>
+              <p className="text-sm text-muted-foreground mb-3">Evidence-based pregnancy care activities</p>
+              <div className="w-full bg-secondary rounded-full h-2 mb-4">
+                <div className="bg-green-600 h-2 rounded-full w-0"></div>
+              </div>
+              <p className="text-xs text-muted-foreground">0% complete</p>
+            </div>
+            
+            <div className="space-y-3">
+              {[
+                'Folic Acid',
+                'Iron Supplement', 
+                'Calcium/Vitamin D',
+                'OB-GYN Visit',
+                'Daily Walk (30 mins)',
+                'Prenatal Vitamins',
+                'Hydration (8 glasses)'
+              ].map((task, index) => (
+                <div key={index} className="flex items-center space-x-3 p-3 rounded-lg hover:bg-muted/50 transition-colors">
+                  <div className="w-5 h-5 rounded border-2 border-primary/30 hover:border-primary cursor-pointer transition-colors"></div>
+                  <span className="text-sm text-card-foreground">{task}</span>
+                </div>
+              ))}
+            </div>
+          </Card>
+        </div>
+
+        {/* Manage Wellness Modules Section */}
+        <div className="mb-8">
+          <div className="flex items-center gap-2 mb-4">
+            <div className="p-2 rounded-lg bg-secondary/50">
+              <Plus className="w-5 h-5 text-secondary-foreground" />
+            </div>
+            <div>
+              <h2 className="text-lg font-semibold text-card-foreground">Manage Wellness Modules</h2>
+              <p className="text-sm text-muted-foreground">Track appointments, supplements, tests, and reminders</p>
+            </div>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <Card 
+              className="p-6 cursor-pointer hover:shadow-lg transition-all duration-200 border-l-4 border-red-200 bg-red-50/50"
+              onClick={() => navigate('/add-task/doctor-appointment')}
+            >
+              <div className="flex items-start space-x-4">
+                <div className="p-3 rounded-xl bg-red-100">
+                  <Calendar className="w-6 h-6 text-red-600" />
+                </div>
+                <div className="flex-1">
+                  <h3 className="font-semibold text-red-900 mb-1">Doctor Appointment</h3>
+                  <p className="text-sm text-red-700">Schedule and track medical appointments</p>
+                </div>
+              </div>
+            </Card>
+
+            <Card 
+              className="p-6 cursor-pointer hover:shadow-lg transition-all duration-200 border-l-4 border-green-200 bg-green-50/50"
+              onClick={() => navigate('/add-task/vitamin-supplement')}
+            >
+              <div className="flex items-start space-x-4">
+                <div className="p-3 rounded-xl bg-green-100">
+                  <Pill className="w-6 h-6 text-green-600" />
+                </div>
+                <div className="flex-1">
+                  <h3 className="font-semibold text-green-900 mb-1">Vitamin / Supplement</h3>
+                  <p className="text-sm text-green-700">Track your daily vitamins and supplements</p>
+                </div>
+              </div>
+            </Card>
+
+            <Card 
+              className="p-6 cursor-pointer hover:shadow-lg transition-all duration-200 border-l-4 border-blue-200 bg-blue-50/50"
+              onClick={() => navigate('/add-task/medical-test')}
+            >
+              <div className="flex items-start space-x-4">
+                <div className="p-3 rounded-xl bg-blue-100">
+                  <FileText className="w-6 h-6 text-blue-600" />
+                </div>
+                <div className="flex-1">
+                  <h3 className="font-semibold text-blue-900 mb-1">Medical Test</h3>
+                  <p className="text-sm text-blue-700">Log medical tests and results</p>
+                </div>
+              </div>
+            </Card>
+
+            <Card 
+              className="p-6 cursor-pointer hover:shadow-lg transition-all duration-200 border-l-4 border-purple-200 bg-purple-50/50"
+              onClick={() => navigate('/add-task/personal-reminder')}
+            >
+              <div className="flex items-start space-x-4">
+                <div className="p-3 rounded-xl bg-purple-100">
+                  <Bell className="w-6 h-6 text-purple-600" />
+                </div>
+                <div className="flex-1">
+                  <h3 className="font-semibold text-purple-900 mb-1">Personal Reminder</h3>
+                  <p className="text-sm text-purple-700">Set personal wellness reminders</p>
+                </div>
+              </div>
+            </Card>
+          </div>
+        </div>
+
         {/* Quick Stats */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
           <Card className="p-4 text-center">
