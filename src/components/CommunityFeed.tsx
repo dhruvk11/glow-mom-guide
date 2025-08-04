@@ -139,22 +139,22 @@ const CommunityFeed = () => {
           {filteredPosts.map((post) => (
             <Card key={post.id} className="p-4 hover:shadow-lg transition-shadow">
               {/* Post Header */}
-              <div className="flex items-start gap-3 mb-3">
-                <Avatar className="w-10 h-10">
-                  <AvatarFallback className="bg-primary/10 text-primary">
-                    {post.username.charAt(0)}
-                  </AvatarFallback>
-                </Avatar>
+              <div className="space-y-2 mb-3">
+                {/* Group Name - Top, clickable */}
+                <button className="text-sm font-semibold text-primary hover:underline">
+                  {post.tag}
+                </button>
                 
-                <div className="flex-1">
-                  <div className="flex items-center gap-2 mb-1">
-                    <span className="font-semibold text-sm">{post.username}</span>
-                    <span className="text-muted-foreground text-sm">·</span>
-                    <span className="text-muted-foreground text-sm">{post.timeAgo}</span>
-                  </div>
-                  <Badge variant="secondary" className="text-xs">
-                    {post.tag}
-                  </Badge>
+                {/* User info with avatar */}
+                <div className="flex items-center gap-2">
+                  <Avatar className="w-6 h-6">
+                    <AvatarFallback className="bg-primary/10 text-primary text-xs">
+                      {post.username.charAt(0)}
+                    </AvatarFallback>
+                  </Avatar>
+                  <span className="text-muted-foreground text-sm">
+                    Posted by <span className="text-foreground font-medium">{post.username}</span> · {post.timeAgo}
+                  </span>
                 </div>
               </div>
 
