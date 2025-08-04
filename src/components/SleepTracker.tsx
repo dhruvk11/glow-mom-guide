@@ -176,21 +176,21 @@ export function SleepTracker() {
         <Card className="bg-white/10 backdrop-blur-sm border-white/20 p-6 rounded-2xl">
           <h2 className="text-xl font-semibold text-white mb-6">How was your sleep quality?</h2>
           
-          <div className="grid grid-cols-5 gap-3">
+          <div className="grid grid-cols-3 sm:grid-cols-5 gap-2 sm:gap-3">
             {sleepQualityOptions.map((option) => (
               <button
                 key={option.value}
                 onClick={() => setQuality(option.value)}
                 className={`
-                  p-4 rounded-2xl text-center transition-all duration-200
+                  p-3 sm:p-4 rounded-2xl text-center transition-all duration-200 min-h-[80px] touch-manipulation
                   ${quality === option.value 
                     ? 'bg-white/30 border-2 border-white scale-105' 
-                    : 'bg-white/10 border border-white/20 hover:bg-white/20'
+                    : 'bg-white/10 border border-white/20 hover:bg-white/20 active:scale-95'
                   }
                 `}
               >
-                <div className="text-3xl mb-2">{option.emoji}</div>
-                <div className="text-white text-sm font-medium">{option.label}</div>
+                <div className="text-2xl sm:text-3xl mb-1 sm:mb-2">{option.emoji}</div>
+                <div className="text-white text-xs sm:text-sm font-medium">{option.label}</div>
               </button>
             ))}
           </div>
@@ -200,20 +200,20 @@ export function SleepTracker() {
         <Card className="bg-white/10 backdrop-blur-sm border-white/20 p-6 rounded-2xl">
           <h2 className="text-xl font-semibold text-white mb-6">What disrupted your sleep?</h2>
           
-          <div className="grid grid-cols-2 gap-3 mb-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
             {sleepDisruptors.map((disruptor) => (
               <button
                 key={disruptor}
                 onClick={() => toggleDisruptor(disruptor)}
                 className={`
-                  p-4 rounded-xl text-left transition-all duration-200 border
+                  p-4 rounded-xl text-left transition-all duration-200 border touch-manipulation min-h-[50px]
                   ${disruptors.includes(disruptor)
                     ? 'bg-white/30 border-white text-white' 
-                    : 'bg-white/10 border-white/20 text-white/80 hover:bg-white/20'
+                    : 'bg-white/10 border-white/20 text-white/80 hover:bg-white/20 active:scale-98'
                   }
                 `}
               >
-                <span className="font-medium">{disruptor}</span>
+                <span className="font-medium text-sm sm:text-base">{disruptor}</span>
               </button>
             ))}
           </div>

@@ -65,20 +65,21 @@ export default function Trackers() {
   };
 
   return (
-    <div className="min-h-screen bg-background pb-20 md:pb-8">
-      <div className="max-w-4xl mx-auto px-4 md:px-6 py-6">
-        <div className="flex items-center justify-between mb-6">
+    <div className="min-h-screen bg-background">
+      <div className="max-w-4xl mx-auto px-4 md:px-6 py-4 md:py-6">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6 gap-4">
           <div>
-            <h1 className="text-2xl md:text-3xl font-bold text-card-foreground mb-2">
+            <h1 className="text-xl md:text-3xl font-bold text-card-foreground mb-2">
               Wellness Trackers
             </h1>
-            <p className="text-muted-foreground">
+            <p className="text-sm md:text-base text-muted-foreground">
               Monitor your mood, sleep, and daily wellness activities with medical insights
             </p>
           </div>
-          <Button onClick={() => navigate("/my-tasks")} variant="outline">
+          <Button onClick={() => navigate("/my-tasks")} variant="outline" className="self-start sm:self-auto">
             <ListTodo className="w-4 h-4 mr-2" />
-            My Tasks
+            <span className="hidden sm:inline">My Tasks</span>
+            <span className="sm:hidden">Tasks</span>
           </Button>
         </div>
 
@@ -148,7 +149,7 @@ export default function Trackers() {
                 </div>
 
                 {/* 4-Box Wellness Module Grid */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-3xl mx-auto">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-3xl mx-auto">
                   {taskModules.map((module) => {
                     const IconComponent = module.icon;
                     const isSelected = selectedModule === module.id;
@@ -157,23 +158,23 @@ export default function Trackers() {
                       <Card
                         key={module.id}
                         className={`
-                          relative p-4 cursor-pointer transition-all duration-300 hover:shadow-lg border-2
-                          ${isSelected ? 'scale-95 shadow-inner' : 'hover:scale-105'}
+                          relative p-4 sm:p-5 cursor-pointer transition-all duration-300 hover:shadow-lg border-2 touch-manipulation min-h-[120px]
+                          ${isSelected ? 'scale-95 shadow-inner' : 'hover:scale-105 active:scale-98'}
                           ${module.borderColor} bg-gradient-to-br ${module.color}
                         `}
                         onClick={() => handleModuleClick(module)}
                       >
                         <div className="flex items-start space-x-3">
                           <div className={`
-                            flex items-center justify-center w-10 h-10 rounded-xl bg-white/80 shadow-sm
+                            flex items-center justify-center w-12 h-12 sm:w-10 sm:h-10 rounded-xl bg-white/80 shadow-sm
                             ${isSelected ? 'scale-90' : ''}
                             transition-transform duration-200
                           `}>
-                            <IconComponent className={`w-5 h-5 ${module.iconColor}`} />
+                            <IconComponent className={`w-6 h-6 sm:w-5 sm:h-5 ${module.iconColor}`} />
                           </div>
                           
                           <div className="flex-1 min-w-0">
-                            <h3 className="font-semibold text-gray-800 mb-1">
+                            <h3 className="font-semibold text-gray-800 mb-1 text-base sm:text-sm">
                               {module.title}
                             </h3>
                             <p className="text-gray-600 text-sm leading-relaxed">

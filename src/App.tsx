@@ -26,19 +26,21 @@ const App = () => (
       <BrowserRouter>
         <div className="min-h-screen bg-background">
           <DesktopNavigation />
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/trackers" element={<Trackers />} />
-            <Route path="/add-task" element={<AddTask />} />
-            <Route path="/my-tasks" element={<MyTasks />} />
-            <Route path="/add-task/doctor-appointment" element={<DoctorAppointmentForm />} />
-            <Route path="/add-task/vitamin-supplement" element={<VitaminSupplementForm />} />
-            <Route path="/add-task/medical-test" element={<MedicalTestForm />} />
-            <Route path="/add-task/personal-reminder" element={<PersonalReminderForm />} />
-            <Route path="/library" element={<Library />} />
-            <Route path="/profile" element={<Profile />} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
+          <main className="pb-20 md:pb-0">
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/trackers" element={<Trackers />} />
+              <Route path="/add-task" element={<AddTask />} />
+              <Route path="/my-tasks" element={<MyTasks />} />
+              <Route path="/add-task/doctor-appointment" element={<DoctorAppointmentForm />} />
+              <Route path="/add-task/vitamin-supplement" element={<VitaminSupplementForm />} />
+              <Route path="/add-task/medical-test" element={<MedicalTestForm />} />
+              <Route path="/add-task/personal-reminder" element={<PersonalReminderForm />} />
+              <Route path="/library" element={<Library />} />
+              <Route path="/profile" element={<Profile />} />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </main>
           <MobileNavigation />
         </div>
       </BrowserRouter>

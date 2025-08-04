@@ -11,7 +11,7 @@ const navItems = [
 
 export function MobileNavigation() {
   return (
-    <nav className="fixed bottom-0 left-0 right-0 bg-card border-t border-border z-50 md:hidden">
+    <nav className="fixed bottom-0 left-0 right-0 bg-card border-t border-border z-50 md:hidden safe-area-inset-bottom">
       <div className="flex">
         {navItems.map((item) => (
           <NavLink
@@ -19,15 +19,15 @@ export function MobileNavigation() {
             to={item.to}
             className={({ isActive }) =>
               cn(
-                "flex-1 flex flex-col items-center justify-center py-3 px-2 text-xs font-medium transition-colors",
+                "flex-1 flex flex-col items-center justify-center py-4 px-2 text-xs font-medium transition-colors touch-manipulation min-h-[60px]",
                 isActive
                   ? "text-primary bg-secondary/50"
-                  : "text-muted-foreground hover:text-primary"
+                  : "text-muted-foreground hover:text-primary active:bg-secondary/30"
               )
             }
           >
             <item.icon className="h-5 w-5 mb-1" />
-            <span>{item.label}</span>
+            <span className="text-xs">{item.label}</span>
           </NavLink>
         ))}
       </div>

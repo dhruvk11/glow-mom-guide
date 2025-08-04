@@ -81,21 +81,21 @@ export function MoodTracker() {
       </div>
 
       {/* Mood Selection */}
-      <div className="grid grid-cols-5 gap-3">
+      <div className="grid grid-cols-3 sm:grid-cols-5 gap-3">
         {moods.map((mood) => (
           <button
             key={mood.value}
             onClick={() => handleMoodSelect(mood.value)}
             className={`
-              p-4 rounded-xl text-center transition-all duration-200 
+              p-3 sm:p-4 rounded-xl text-center transition-all duration-200 min-h-[80px] touch-manipulation
               ${selectedMood === mood.value 
                 ? 'ring-2 ring-primary shadow-medium scale-105' 
-                : 'hover:scale-105 hover:shadow-soft'
+                : 'hover:scale-105 hover:shadow-soft active:scale-95'
               }
               bg-white border border-border
             `}
           >
-            <div className="text-3xl mb-2">{mood.emoji}</div>
+            <div className="text-2xl sm:text-3xl mb-1 sm:mb-2">{mood.emoji}</div>
             <div className="text-xs font-medium text-card-foreground">
               {mood.label}
             </div>
