@@ -1,17 +1,14 @@
 import { useState } from "react";
-import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { Badge } from "@/components/ui/badge";
 import { Heart, Users, Baby, Bed } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 const moods = [
-  { emoji: "😍", label: "Happy", value: "happy", color: "mood-happy" },
-  { emoji: "😊", label: "Content", value: "content", color: "mood-content" },
-  { emoji: "😐", label: "Neutral", value: "neutral", color: "mood-neutral" },
-  { emoji: "😢", label: "Sad", value: "sad", color: "mood-sad" },
-  { emoji: "😠", label: "Angry", value: "angry", color: "mood-angry" },
+  { emoji: "😍", label: "Happy", value: "happy" },
+  { emoji: "🙂", label: "Content", value: "content" },
+  { emoji: "😐", label: "Neutral", value: "neutral" },
+  { emoji: "🥲", label: "Sad", value: "sad" },
+  { emoji: "😠", label: "Angry", value: "angry" },
 ];
 
 const reasonTags = [
@@ -70,85 +67,105 @@ export function MoodTracker() {
   };
 
   return (
-    <Card className="p-6 space-y-6 bg-mood-card">
-      <div>
-        <h3 className="text-lg font-semibold text-card-foreground mb-2">
-          How are you feeling today?
-        </h3>
+    <div className="min-h-screen bg-background p-4 pb-24">
+      {/* Header Section */}
+      <div className="mb-8">
+        <h1 className="text-2xl font-bold text-foreground mb-2">
+          Mood Tracker
+        </h1>
         <p className="text-sm text-muted-foreground">
           Track your emotional wellness with evidence-based insights
         </p>
       </div>
 
-      {/* Mood Selection */}
-      <div className="grid grid-cols-3 sm:grid-cols-5 gap-3">
-        {moods.map((mood) => (
-          <button
-            key={mood.value}
-            onClick={() => handleMoodSelect(mood.value)}
-            className={`
-              p-3 sm:p-4 rounded-xl text-center transition-all duration-200 min-h-[80px] touch-manipulation
-              ${selectedMood === mood.value 
-                ? 'ring-2 ring-primary shadow-medium scale-105' 
-                : 'hover:scale-105 hover:shadow-soft active:scale-95'
-              }
-              bg-white border border-border
-            `}
-          >
-            <div className="text-2xl sm:text-3xl mb-1 sm:mb-2">{mood.emoji}</div>
-            <div className="text-xs font-medium text-card-foreground">
-              {mood.label}
-            </div>
-          </button>
-        ))}
+      {/* Mood Selector Section */}
+      <div className="mb-8">
+        <h2 className="text-xl font-semibold text-foreground mb-2">
+          How are you feeling today?
+        </h2>
+        <p className="text-sm text-muted-foreground mb-6">
+          Select the emoji that best represents your current mood
+        </p>
+        
+        <div className="grid grid-cols-3 sm:grid-cols-5 gap-4">
+          {moods.map((mood) => (
+            <button
+              key={mood.value}
+              onClick={() => handleMoodSelect(mood.value)}
+              className={`
+                relative p-4 rounded-2xl text-center transition-all duration-200 
+                min-h-[80px] min-w-[80px] touch-manipulation
+                ${selectedMood === mood.value 
+                  ? 'bg-accent scale-105 shadow-lg border-2 border-primary' 
+                  : 'bg-white border border-border hover:scale-105 hover:shadow-md active:scale-95'
+                }
+              `}
+            >
+              <div className="text-3xl mb-2">{mood.emoji}</div>
+              <div className="text-xs font-medium text-foreground">
+                {mood.label}
+              </div>
+            </button>
+          ))}
+        </div>
       </div>
 
-      {/* Reason Tags */}
+      {/* Contributing Factors Section */}
       {selectedMood && (
-        <div className="space-y-3 animate-in fade-in duration-300">
-          <p className="text-sm font-medium text-card-foreground">
+        <div className="mb-8 animate-in fade-in duration-300">
+          <h3 className="text-lg font-semibold text-foreground mb-6">
             What might be contributing? (Optional)
-          </p>
-          <div className="flex flex-wrap gap-2">
+          </h3>
+          <div className="flex flex-wrap gap-3">
             {reasonTags.map((tag) => (
-              <Badge
+              <button
                 key={tag.label}
-                variant={selectedReasons.includes(tag.label) ? "default" : "outline"}
-                className="cursor-pointer transition-colors"
                 onClick={() => toggleReason(tag.label)}
+                className={`
+                  flex items-center gap-2 px-4 py-3 rounded-full text-sm font-medium
+                  transition-all duration-200 touch-manipulation min-h-[44px]
+                  ${selectedReasons.includes(tag.label)
+                    ? 'bg-secondary text-secondary-foreground border-2 border-primary shadow-sm' 
+                    : 'bg-white text-foreground border border-border hover:bg-accent hover:shadow-sm'
+                  }
+                `}
               >
-                <tag.icon className="w-3 h-3 mr-1" />
+                <tag.icon className="w-4 h-4" />
                 {tag.label}
-              </Badge>
+              </button>
             ))}
           </div>
         </div>
       )}
 
-      {/* Notes */}
+      {/* Additional Notes Section */}
       {selectedMood && (
-        <div className="space-y-2 animate-in fade-in duration-500">
-          <label className="text-sm font-medium text-card-foreground">
+        <div className="mb-8 animate-in fade-in duration-500">
+          <h3 className="text-lg font-semibold text-foreground mb-4">
             Additional notes (Optional)
-          </label>
+          </h3>
           <Textarea
             value={notes}
             onChange={(e) => setNotes(e.target.value)}
             placeholder="How are you feeling today? Any specific thoughts or concerns..."
-            className="min-h-[80px] bg-white"
+            className="min-h-[120px] text-base bg-white rounded-2xl border-border resize-none"
           />
         </div>
       )}
 
-      {/* Submit Button */}
+      {/* Primary Action Button */}
       {selectedMood && (
-        <Button 
-          onClick={handleSubmit}
-          className="w-full bg-primary hover:bg-primary/90 text-primary-foreground"
-        >
-          Log Mood Entry
-        </Button>
+        <div className="fixed bottom-20 left-4 right-4 animate-in fade-in duration-700">
+          <button 
+            onClick={handleSubmit}
+            className="w-full bg-[#F28CAB] hover:bg-[#E07A9F] text-white font-semibold 
+                     py-4 px-6 rounded-2xl shadow-lg transition-all duration-200 
+                     min-h-[56px] active:scale-98 hover:shadow-xl"
+          >
+            Log Mood Entry
+          </button>
+        </div>
       )}
-    </Card>
+    </div>
   );
 }
