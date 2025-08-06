@@ -67,8 +67,7 @@ export default function Trackers() {
   return (
     <div className="min-h-screen bg-background">
       <div className="max-w-4xl mx-auto px-4 md:px-6 py-4 md:py-6">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6 gap-4">
-          <div>
+          <div className="mb-6">
             <h1 className="text-xl md:text-3xl font-bold text-card-foreground mb-2">
               Wellness Trackers
             </h1>
@@ -76,12 +75,6 @@ export default function Trackers() {
               Monitor your mood, sleep, and daily wellness activities with medical insights
             </p>
           </div>
-          <Button onClick={() => navigate("/my-tasks")} variant="outline" className="self-start sm:self-auto">
-            <ListTodo className="w-4 h-4 mr-2" />
-            <span className="hidden sm:inline">My Tasks</span>
-            <span className="sm:hidden">Tasks</span>
-          </Button>
-        </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <TabsList className="grid w-full grid-cols-3 h-auto p-1 bg-secondary/50">
@@ -210,6 +203,14 @@ export default function Trackers() {
                     </p>
                   </div>
                   <TaskTracker />
+                </div>
+                
+                {/* My Tasks Button */}
+                <div className="text-center pt-4">
+                  <Button onClick={() => navigate("/my-tasks")} variant="outline" size="lg">
+                    <ListTodo className="w-4 h-4 mr-2" />
+                    My Tasks
+                  </Button>
                 </div>
               </div>
             </TabsContent>

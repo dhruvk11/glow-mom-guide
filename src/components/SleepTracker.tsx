@@ -1,9 +1,8 @@
 import { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, TrendingUp, Moon, Sun } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { CircularTimeSlider } from "./CircularTimeSlider";
+import { SleepScroller } from "./SleepScroller";
 
 const sleepTips = [
   "Try sleeping on your left side to improve blood flow to your baby. Use pillows for support!",
@@ -58,9 +57,6 @@ const getQualityAdvice = (quality: string) => {
 export function SleepTracker() {
   const [bedtime, setBedtime] = useState(22.5); // 10:30 PM
   const [waketime, setWaketime] = useState(7.5); // 7:30 AM
-  const [quality, setQuality] = useState('');
-  const [disruptors, setDisruptors] = useState<string[]>([]);
-  const [otherDisruptor, setOtherDisruptor] = useState('');
   const [currentTipIndex, setCurrentTipIndex] = useState(0);
   const { toast } = useToast();
 
@@ -90,153 +86,73 @@ export function SleepTracker() {
 
   const sleepDuration = calculateSleepDuration();
 
-  const handleTimeChange = (type: 'bedtime' | 'waketime', value: number) => {
-    if (type === 'bedtime') {
-      setBedtime(value);
-    } else {
-      setWaketime(value);
-    }
-  };
-
-  const toggleDisruptor = (disruptor: string) => {
-    setDisruptors(prev => 
-      prev.includes(disruptor) 
-        ? prev.filter(d => d !== disruptor)
-        : [...prev, disruptor]
-    );
-  };
-
   const handleSave = () => {
-    if (!quality) {
-      toast({
-        title: "Please select sleep quality",
-        description: "We need to know how well you slept to provide better insights.",
-        variant: "destructive"
-      });
-      return;
-    }
-
-    const advice = getQualityAdvice(quality);
     toast({
       title: "Sleep logged! 🌙",
-      description: `${sleepDuration.hours}h ${sleepDuration.minutes}m sleep. ${advice}`,
-      duration: 6000,
+      description: `${sleepDuration.hours}h ${sleepDuration.minutes}m sleep recorded successfully.`,
+      duration: 4000,
     });
 
     // Reset form
     setBedtime(22.5);
     setWaketime(7.5);
-    setQuality('');
-    setDisruptors([]);
-    setOtherDisruptor('');
   };
 
+  const recentSleepData = [
+    { date: "Aug 5", duration: "7h 45m" },
+    { date: "Aug 4", duration: "6h 30m" },
+    { date: "Aug 3", duration: "8h 10m" },
+    { date: "Aug 2", duration: "7h 20m" },
+    { date: "Aug 1", duration: "6h 45m" },
+  ];
+
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#4C5CDB] to-[#6C5DD3] text-white">
-      {/* Header */}
-      <div className="flex items-center justify-between p-6 pt-12">
-        <ArrowLeft className="w-6 h-6" />
-        <TrendingUp className="w-6 h-6 p-1 bg-white/20 rounded-full" />
-      </div>
+    <div className="space-y-6">
+      {/* Sleep Tips Box */}
+      <Card className="bg-gradient-to-r from-purple-50 to-purple-100 border-purple-200 p-4 rounded-2xl">
+        <div className="flex items-start gap-3">
+          <div className="text-xl">💡</div>
+          <div>
+            <h3 className="font-semibold text-purple-900 mb-1">
+              Sleep Tip
+            </h3>
+            <p className="text-purple-700 text-sm leading-relaxed">
+              {sleepTips[currentTipIndex]}
+            </p>
+          </div>
+        </div>
+      </Card>
 
-      <div className="px-6 pb-6">
-        <h1 className="text-3xl font-bold mb-2">Sleep Tracker</h1>
-        <p className="text-white/80 text-lg">Track your rest for better wellness</p>
-      </div>
+      {/* Sleep Scroller Component */}
+      <Card className="p-6 rounded-2xl bg-white border border-gray-200 shadow-sm">
+        <SleepScroller
+          bedtime={bedtime}
+          waketime={waketime}
+          onBedtimeChange={setBedtime}
+          onWaketimeChange={setWaketime}
+        />
+      </Card>
 
-      <div className="px-4 space-y-6 max-w-md mx-auto">
-        {/* Sleep Tip Banner */}
-        <Card className="bg-white/10 backdrop-blur-sm border-white/20 p-6 rounded-2xl transition-all duration-500">
-          <div className="flex items-start gap-4">
-            <div className="text-2xl">💡</div>
-            <div>
-              <h3 className="font-semibold text-white mb-2">
-                Sleep Tip
-              </h3>
-              <p className="text-white/90 text-sm leading-relaxed">
-                {sleepTips[currentTipIndex]}
-              </p>
+      {/* Recent Sleep Data */}
+      <Card className="p-6 rounded-2xl bg-white border border-gray-200 shadow-sm">
+        <h3 className="font-semibold text-gray-900 mb-4">Recent Sleep Data</h3>
+        <div className="space-y-3">
+          {recentSleepData.map((entry, index) => (
+            <div key={index} className="flex justify-between items-center py-2 border-b border-gray-100 last:border-b-0">
+              <span className="text-gray-600 text-sm">{entry.date}</span>
+              <span className="font-medium text-gray-900">{entry.duration}</span>
             </div>
-          </div>
-        </Card>
+          ))}
+        </div>
+      </Card>
 
-        {/* Sleep Times - Apple Watch Style Dial */}
-        <Card className="bg-white/10 backdrop-blur-sm border-white/20 p-6 rounded-2xl">
-          <h2 className="text-xl font-semibold text-white mb-6 text-center">Sleep Times</h2>
-          
-          <CircularTimeSlider
-            bedtime={bedtime}
-            waketime={waketime}
-            onBedtimeChange={setBedtime}
-            onWaketimeChange={setWaketime}
-          />
-        </Card>
-
-        {/* Sleep Quality */}
-        <Card className="bg-white/10 backdrop-blur-sm border-white/20 p-6 rounded-2xl">
-          <h2 className="text-xl font-semibold text-white mb-6">How was your sleep quality?</h2>
-          
-          <div className="grid grid-cols-3 sm:grid-cols-5 gap-2 sm:gap-3">
-            {sleepQualityOptions.map((option) => (
-              <button
-                key={option.value}
-                onClick={() => setQuality(option.value)}
-                className={`
-                  p-3 sm:p-4 rounded-2xl text-center transition-all duration-200 min-h-[80px] touch-manipulation
-                  ${quality === option.value 
-                    ? 'bg-white/30 border-2 border-white scale-105' 
-                    : 'bg-white/10 border border-white/20 hover:bg-white/20 active:scale-95'
-                  }
-                `}
-              >
-                <div className="text-2xl sm:text-3xl mb-1 sm:mb-2">{option.emoji}</div>
-                <div className="text-white text-xs sm:text-sm font-medium">{option.label}</div>
-              </button>
-            ))}
-          </div>
-        </Card>
-
-        {/* Sleep Disruptors */}
-        <Card className="bg-white/10 backdrop-blur-sm border-white/20 p-6 rounded-2xl">
-          <h2 className="text-xl font-semibold text-white mb-6">What disrupted your sleep?</h2>
-          
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
-            {sleepDisruptors.map((disruptor) => (
-              <button
-                key={disruptor}
-                onClick={() => toggleDisruptor(disruptor)}
-                className={`
-                  p-4 rounded-xl text-left transition-all duration-200 border touch-manipulation min-h-[50px]
-                  ${disruptors.includes(disruptor)
-                    ? 'bg-white/30 border-white text-white' 
-                    : 'bg-white/10 border-white/20 text-white/80 hover:bg-white/20 active:scale-98'
-                  }
-                `}
-              >
-                <span className="font-medium text-sm sm:text-base">{disruptor}</span>
-              </button>
-            ))}
-          </div>
-
-          {disruptors.includes('Other') && (
-            <input
-              type="text"
-              placeholder="Describe what disrupted your sleep..."
-              value={otherDisruptor}
-              onChange={(e) => setOtherDisruptor(e.target.value)}
-              className="w-full bg-white/20 border border-white/30 rounded-xl px-4 py-3 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-white/50"
-            />
-          )}
-        </Card>
-
-        {/* Save Button */}
-        <Button 
-          onClick={handleSave}
-          className="w-full bg-white text-[#6C5DD3] hover:bg-white/90 py-6 text-lg font-semibold rounded-2xl mb-8"
-        >
-          Save Sleep Log
-        </Button>
-      </div>
+      {/* Save Button */}
+      <Button 
+        onClick={handleSave}
+        className="w-full bg-pink-500 hover:bg-pink-600 text-white py-4 text-lg font-semibold rounded-2xl shadow-lg transition-all duration-200 hover:shadow-xl active:scale-98"
+      >
+        Log Sleep Entry
+      </Button>
     </div>
   );
 }
