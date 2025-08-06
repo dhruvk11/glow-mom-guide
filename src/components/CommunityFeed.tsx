@@ -2,15 +2,14 @@ import React, { useState } from 'react';
 import { Heart, MessageCircle, Share, Search, Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { CreatePostModal } from './CreatePostModal';
+import { useToast } from '@/hooks/use-toast';
 
 interface Post {
   id: string;
-  username: string;
   tag: string;
-  timeAgo: string;
   content: string;
   image?: string;
   likes: number;
@@ -21,9 +20,7 @@ interface Post {
 const mockPosts: Post[] = [
   {
     id: '1',
-    username: 'Nurturing Nest',
     tag: 'Trimester 2 Support',
-    timeAgo: '2h',
     content: 'Feeling overwhelmed by the sheer volume of baby gear out there! Any recommendations for must-have items that truly made a difference for you? Trying to keep it minimalist but practical. 🙏',
     likes: 85,
     comments: 12,
@@ -31,9 +28,7 @@ const mockPosts: Post[] = [
   },
   {
     id: '2',
-    username: 'Mama Bear Club',
     tag: 'New Moms Connect',
-    timeAgo: '4h',
     content: 'Just hit 28 weeks! So excited and a little nervous. Sharing a photo of my growing bump. What\'s one piece of advice you\'d give to your 28-week pregnant self?',
     image: '/placeholder.svg',
     likes: 85,
@@ -42,9 +37,7 @@ const mockPosts: Post[] = [
   },
   {
     id: '3',
-    username: 'Expecting Joy',
     tag: 'First Trimester Tips',
-    timeAgo: '4h',
     content: 'Morning sickness hitting hard this week. Found that ginger tea and small frequent meals really help. What are your go-to remedies? 💚',
     likes: 42,
     comments: 8,
@@ -68,6 +61,8 @@ const CommunityFeed = () => {
   const [posts, setPosts] = useState<Post[]>(mockPosts);
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const { toast } = useToast();
 
   const handleLike = (postId: string) => {
     setPosts(posts.map(post => 
@@ -81,11 +76,28 @@ const CommunityFeed = () => {
     ));
   };
 
+  const handleCreatePost = (postData: { tag: string; content: string; image?: string }) => {
+    const newPost: Post = {
+      id: Date.now().toString(),
+      tag: postData.tag,
+      content: postData.content,
+      image: postData.image,
+      likes: 0,
+      comments: 0,
+      isLiked: false,
+    };
+
+    setPosts([newPost, ...posts]);
+    toast({
+      title: "Post created! 🎉",
+      description: "Your post has been shared with the community.",
+    });
+  };
+
   const filteredPosts = posts.filter(post => {
     const matchesTag = !selectedTag || post.tag === selectedTag;
     const matchesSearch = !searchQuery || 
       post.content.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      post.username.toLowerCase().includes(searchQuery.toLowerCase()) ||
       post.tag.toLowerCase().includes(searchQuery.toLowerCase());
     return matchesTag && matchesSearch;
   });
@@ -137,35 +149,25 @@ const CommunityFeed = () => {
       <div className="max-w-2xl mx-auto px-4 pb-20">
         <div className="space-y-4">
           {filteredPosts.map((post) => (
-            <Card key={post.id} className="p-4 hover:shadow-lg transition-shadow">
-              {/* Post Header */}
-              <div className="space-y-2 mb-3">
-                {/* Group Name - Top, clickable */}
-                <button className="text-sm font-semibold text-primary hover:underline">
+            <Card key={post.id} className="p-6 hover:shadow-lg transition-shadow">
+              {/* Community Tag */}
+              <div className="mb-4">
+                <Badge 
+                  variant="secondary" 
+                  className="text-pink-600 bg-pink-50 border-pink-200 px-3 py-1 text-sm font-medium"
+                >
                   {post.tag}
-                </button>
-                
-                {/* User info with avatar */}
-                <div className="flex items-center gap-2">
-                  <Avatar className="w-6 h-6">
-                    <AvatarFallback className="bg-primary/10 text-primary text-xs">
-                      {post.username.charAt(0)}
-                    </AvatarFallback>
-                  </Avatar>
-                  <span className="text-muted-foreground text-sm">
-                    Posted by <span className="text-foreground font-medium">{post.username}</span> · {post.timeAgo}
-                  </span>
-                </div>
+                </Badge>
               </div>
 
               {/* Post Content */}
               <div className="mb-4">
-                <p className="text-sm leading-relaxed whitespace-pre-wrap">
+                <p className="text-gray-800 leading-relaxed whitespace-pre-wrap">
                   {post.content}
                 </p>
                 
                 {post.image && (
-                  <div className="mt-3 rounded-lg overflow-hidden">
+                  <div className="mt-4 rounded-lg overflow-hidden">
                     <img
                       src={post.image}
                       alt="Post attachment"
@@ -206,10 +208,19 @@ const CommunityFeed = () => {
       {/* Floating Create Post Button */}
       <Button
         size="icon"
-        className="fixed bottom-20 right-4 w-14 h-14 rounded-full shadow-lg hover:shadow-xl transition-shadow"
+        onClick={() => setIsCreateModalOpen(true)}
+        className="fixed bottom-20 right-4 w-14 h-14 rounded-full shadow-lg hover:shadow-xl transition-shadow bg-pink-500 hover:bg-pink-600"
       >
         <Plus className="w-6 h-6" />
       </Button>
+
+      {/* Create Post Modal */}
+      <CreatePostModal
+        isOpen={isCreateModalOpen}
+        onClose={() => setIsCreateModalOpen(false)}
+        onSubmit={handleCreatePost}
+        defaultTag={selectedTag || undefined}
+      />
     </div>
   );
 };
