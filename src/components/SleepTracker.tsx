@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
-import { SleepScroller } from "./SleepScroller";
+import { CircularSleepScroller } from "./CircularSleepScroller";
 
 const sleepTips = [
   "Try sleeping on your left side to improve blood flow to your baby. Use pillows for support!",
@@ -125,7 +125,7 @@ export function SleepTracker() {
 
       {/* Sleep Scroller Component */}
       <Card className="p-6 rounded-2xl bg-white border border-gray-200 shadow-sm">
-        <SleepScroller
+        <CircularSleepScroller
           bedtime={bedtime}
           waketime={waketime}
           onBedtimeChange={setBedtime}
