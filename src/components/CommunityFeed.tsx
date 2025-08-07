@@ -16,6 +16,8 @@ interface Post {
   comments: number;
   isLiked: boolean;
   username: string;
+  avatar: string;
+  timestamp: string;
 }
 
 const mockPosts: Post[] = [
@@ -26,7 +28,9 @@ const mockPosts: Post[] = [
     likes: 85,
     comments: 12,
     isLiked: false,
-    username: 'Sarah M.',
+    username: 'Nurturing Nest',
+    avatar: '/placeholder.svg',
+    timestamp: '2h',
   },
   {
     id: '2',
@@ -36,7 +40,9 @@ const mockPosts: Post[] = [
     likes: 85,
     comments: 12,
     isLiked: false,
-    username: 'Emily R.',
+    username: 'Mama Bear Club',
+    avatar: '/placeholder.svg',
+    timestamp: '4h',
   },
   {
     id: '3',
@@ -46,6 +52,8 @@ const mockPosts: Post[] = [
     comments: 8,
     isLiked: true,
     username: 'Jessica L.',
+    avatar: '/placeholder.svg',
+    timestamp: '6h',
   },
 ];
 
@@ -90,6 +98,8 @@ const CommunityFeed = () => {
       comments: 0,
       isLiked: false,
       username: 'You',
+      avatar: '/placeholder.svg',
+      timestamp: 'now',
     };
 
     setPosts([newPost, ...posts]);
@@ -165,9 +175,16 @@ const CommunityFeed = () => {
                 </Badge>
               </div>
 
-              {/* Username */}
-              <div className="mb-3">
-                <span className="text-sm font-medium text-gray-900">{post.username}</span>
+              {/* User Info */}
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-8 h-8 rounded-full bg-pink-100 flex items-center justify-center text-pink-600 font-medium text-sm">
+                  {post.username.charAt(0)}
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="font-bold text-gray-900">{post.username}</span>
+                  <span className="text-gray-500">•</span>
+                  <span className="text-gray-500 text-sm">{post.timestamp}</span>
+                </div>
               </div>
 
               {/* Post Content */}
