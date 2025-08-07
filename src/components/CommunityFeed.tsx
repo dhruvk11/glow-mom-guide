@@ -15,6 +15,7 @@ interface Post {
   likes: number;
   comments: number;
   isLiked: boolean;
+  username: string;
 }
 
 const mockPosts: Post[] = [
@@ -25,6 +26,7 @@ const mockPosts: Post[] = [
     likes: 85,
     comments: 12,
     isLiked: false,
+    username: 'Sarah M.',
   },
   {
     id: '2',
@@ -34,6 +36,7 @@ const mockPosts: Post[] = [
     likes: 85,
     comments: 12,
     isLiked: false,
+    username: 'Emily R.',
   },
   {
     id: '3',
@@ -42,6 +45,7 @@ const mockPosts: Post[] = [
     likes: 42,
     comments: 8,
     isLiked: true,
+    username: 'Jessica L.',
   },
 ];
 
@@ -85,6 +89,7 @@ const CommunityFeed = () => {
       likes: 0,
       comments: 0,
       isLiked: false,
+      username: 'You',
     };
 
     setPosts([newPost, ...posts]);
@@ -158,6 +163,11 @@ const CommunityFeed = () => {
                 >
                   {post.tag}
                 </Badge>
+              </div>
+
+              {/* Username */}
+              <div className="mb-3">
+                <span className="text-sm font-medium text-gray-900">{post.username}</span>
               </div>
 
               {/* Post Content */}
