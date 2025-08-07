@@ -72,25 +72,29 @@ export function CircularSleepScroller({
     const startPoint = getPointOnCircle(startAngle);
     const endPoint = getPointOnCircle(endAngle);
     
-    let largeArcFlag = 0;
-    let sweepFlag = 1;
-    
-    if (waketime < bedtime) {
-      // Sleep spans midnight
-      const arc1End = getPointOnCircle(-90); // Midnight position
-      const arc2Start = getPointOnCircle(-90); // Midnight position
+    // For sleep spanning midnight (bedtime > waketime in 24h format)
+    if (bedtime > waketime) {
+      // Create two arcs: bedtime to midnight, and midnight to waketime
+      const midnightAngle = timeToAngle(0); // 12 AM at top
+      const midnightPoint = getPointOnCircle(midnightAngle);
+      
+      // Calculate if we need large arc flag for each segment
+      const firstArcSweep = (360 + midnightAngle - startAngle) % 360;
+      const secondArcSweep = (endAngle - midnightAngle + 360) % 360;
       
       return (
         <>
+          {/* First arc: bedtime to midnight */}
           <path
-            d={`M ${startPoint.x} ${startPoint.y} A ${radius} ${radius} 0 ${endAngle < startAngle ? 1 : 0} ${sweepFlag} ${arc1End.x} ${arc1End.y}`}
+            d={`M ${startPoint.x} ${startPoint.y} A ${radius} ${radius} 0 ${firstArcSweep > 180 ? 1 : 0} 1 ${midnightPoint.x} ${midnightPoint.y}`}
             fill="none"
             stroke="url(#sleepGradient)"
             strokeWidth="12"
             strokeLinecap="round"
           />
+          {/* Second arc: midnight to waketime */}
           <path
-            d={`M ${arc2Start.x} ${arc2Start.y} A ${radius} ${radius} 0 0 ${sweepFlag} ${endPoint.x} ${endPoint.y}`}
+            d={`M ${midnightPoint.x} ${midnightPoint.y} A ${radius} ${radius} 0 ${secondArcSweep > 180 ? 1 : 0} 1 ${endPoint.x} ${endPoint.y}`}
             fill="none"
             stroke="url(#sleepGradient)"
             strokeWidth="12"
@@ -99,13 +103,13 @@ export function CircularSleepScroller({
         </>
       );
     } else {
-      if (endAngle - startAngle > 180) {
-        largeArcFlag = 1;
-      }
+      // Single arc for sleep within same day
+      const sweepAngle = (endAngle - startAngle + 360) % 360;
+      const largeArcFlag = sweepAngle > 180 ? 1 : 0;
       
       return (
         <path
-          d={`M ${startPoint.x} ${startPoint.y} A ${radius} ${radius} 0 ${largeArcFlag} ${sweepFlag} ${endPoint.x} ${endPoint.y}`}
+          d={`M ${startPoint.x} ${startPoint.y} A ${radius} ${radius} 0 ${largeArcFlag} 1 ${endPoint.x} ${endPoint.y}`}
           fill="none"
           stroke="url(#sleepGradient)"
           strokeWidth="12"
@@ -223,9 +227,10 @@ export function CircularSleepScroller({
           onTouchEnd={handleMouseUp}
         >
           <defs>
-            <linearGradient id="sleepGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-              <stop offset="0%" stopColor="#9f7aea" />
-              <stop offset="50%" stopColor="#ed8936" />
+            <linearGradient id="sleepGradient" gradientUnits="userSpaceOnUse">
+              <stop offset="0%" stopColor="#7c3aed" />
+              <stop offset="30%" stopColor="#9f7aea" />
+              <stop offset="70%" stopColor="#ed8936" />
               <stop offset="100%" stopColor="#f6ad55" />
             </linearGradient>
           </defs>
