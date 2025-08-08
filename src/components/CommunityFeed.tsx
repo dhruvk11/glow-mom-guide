@@ -165,11 +165,12 @@ const CommunityFeed = () => {
         <div className="space-y-4">
           {filteredPosts.map((post) => (
             <Card key={post.id} className="p-6 hover:shadow-lg transition-shadow">
-              {/* Community Tag */}
-              <div className="mb-4">
+              {/* Group Tag */}
+              <div className="mb-3">
                 <Badge 
                   variant="secondary" 
-                  className="text-pink-600 bg-pink-50 border-pink-200 px-3 py-1 text-sm font-medium"
+                  className="text-pink-600 bg-pink-50 hover:bg-pink-100 border-pink-200 px-3 py-1.5 text-sm font-medium rounded-full cursor-pointer transition-colors"
+                  onClick={() => setSelectedTag(post.tag)}
                 >
                   {post.tag}
                 </Badge>
@@ -181,9 +182,9 @@ const CommunityFeed = () => {
                   {post.username.charAt(0)}
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="font-bold text-gray-900">{post.username}</span>
-                  <span className="text-gray-500">•</span>
-                  <span className="text-gray-500 text-sm">{post.timestamp}</span>
+                  <span className="font-bold text-foreground">{post.username}</span>
+                  <span className="text-muted-foreground">•</span>
+                  <span className="text-muted-foreground text-sm">{post.timestamp}</span>
                 </div>
               </div>
 
